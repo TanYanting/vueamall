@@ -1,0 +1,24 @@
+{
+	"status":0,
+	"msg":"",
+	"result":[
+		{
+			"productId":"1000001",
+			"productName":"音响",
+			"productPrice":499,
+			"productImg":"1.jpg"
+		},
+		{
+			"productId":"1000002",
+			"productName":"xiaomi6 蓝牙耳机",
+			"productPrice":599,
+			"productImg":"2.jpg"
+		},
+		{
+			"productId":"1000003",
+			"productName":"耳机",
+			"productPrice":2499,
+			"productImg":"3.jpg"
+		}
+	]
+}
