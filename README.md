@@ -57,21 +57,22 @@ db.auth("admin","admin")
 
 #### 数据库基本操作（增删改查）
 >先进入数据库 mongo命令执行完以后
-1,增
+
+1. 增
 ```
 db.createCollect("collectionName")//新增集合（表），可省略
 db.collectionName.insert({})
 ```
-2,删
+2. 删
 ```
 db.collectionName.remove({[条件]})
 db.collectionName.drop()//删除集合（表）
 ```
-3,改
+3. 改
 ```
 db.collectionName.update({[条件]},{$set:{[修改的数据]}})
 ```
-4,查
+4. 查
 ```
 db.collectionName.find({[条件，可选]})
 db.collectionName.find({[条件，可选]}).pretty() //格式化
