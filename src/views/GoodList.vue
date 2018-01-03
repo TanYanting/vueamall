@@ -13,7 +13,12 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price">Price <svg class="icon icon-arrow-short"><use xlink:href="#icon-arrow-short"></use></svg></a>
+          <a href="javascript:void(0)" class="price" @click="sortGoods">
+            Price
+            <svg class="icon icon-arrow-short">
+              <use xlink:href="#icon-arrow-short"></use>
+            </svg>
+          </a>
           <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
@@ -39,7 +44,7 @@
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
-                    <div class="price">{{item.productPrice}}</div>
+                    <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
@@ -78,9 +83,12 @@ import axios from 'axios'
 
 //导出
 export default{
-  data(){
+  data(){ //数据
     return{
-      goodsList:[],
+      goodsList: [],//商品列表
+      sortFlag: true,//排序 1true升序-1false降序
+      page: 1,//当前页
+      pageSize: 8,//页面容量
       priceFilter:[
         {
           startPrice:"0.00",
@@ -100,19 +108,23 @@ export default{
       overLayFlag: false
     }
   },
-  //ES写法，会转为key:value形式，同名
-  components:{
-    NavHeader,
+  components:{ //组件
+    NavHeader, //ES6写法，会转为key:value形式，同名
     NavFooter,
     NavBread
   },
   mounted:function () {
-    this.getGoodsList();
+    this.getGoodsList(); //获取商品列表
   },
   methods:{
-    getGoodsList () {
+    getGoodsList () { //获取商品列表
+      let param ={ //参数 传递给后台
+        "page": this.page,
+        "pageSize": this.pageSize,
+        "sort": this.sortFlag?1:-1
+      };
       //要设置代理，实际访问localhost:8090下的/goods,因此要转发的localhost:3000下的/goods
-      axios.get("/goods").then((response)=>{
+      axios.get("/goods",{params:param}).then((response)=>{
         let res = response.data;
         if(res.status == '0'){
           this.goodsList = res.result.list;
@@ -120,6 +132,11 @@ export default{
             this.goodsList = [];
         }
       })
+    },
+    sortGoods () { //排序
+      this.sortFlag = !this.sortFlag; //toggle正/降序
+      this.page = 1; //分页从1开始
+      this.getGoodsList(); //刷新列表
     },
     setPriceFilter (index) {
       this.priceChecked = index;

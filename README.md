@@ -105,3 +105,36 @@ proxyTable: {
 当调`localhost:8090/goods`时会转发给`localhost:3000/goods`
 在上线项目中，这个步骤应该是不需要的，不需要跨域访问，只是在开发时需要
 >注意：因为是前后端分了两个服务器，务必要保证两个服务都正常运行，才能成功访问。
+
+## 2018-01-03 笔记2
+1. get方法获取的数据都是**String**类型的
+2. get方法nodejs原生获取数据提供的方法为 `url.parse(request.url).key`,
+express框架中封装方法param, 获取数据方法为`request.param('keyname')`
+3. nodejs服务端中，`require`,`console`都是**nodejs**提供的类库
+4. mongoose中
+models\goods.js 导出数据模型
+```ecmascript 6
+var mongoose = require("mongoose");
+var Schema = mongoose.Schema;
+var productSchema = new Schema({
+  "productId":String,
+  "productName":String,
+  "salePrice": Number,
+  "productImage": String
+});
+module.exports = mongoose.model('Good',productSchema);
+```
+routes\goods.js 查找数据方法中
+分页 利用`skip`跳过前面条数，和`limit`限制只查几条，类似截取字符串
+链式方法
+（ps:`skip`和`limit`应该都是**mongoose**提供的方法）
+```ecmascript 6
+var Goods = require("../models/goods");
+let goodsModel = Goods.find(params).skip(skip).limit(pageSize);
+goodsModel.sort({'salePrice':sort});//设置条件
+goodsModel.exec(function(err,doc){//执行操作,不需要条件了，直接执行
+  //err:如果错误的话会有
+  //doc:查询结果
+});
+```
+
