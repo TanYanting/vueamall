@@ -7,7 +7,7 @@
     <nav-bread>
       <span> Goods </span>
     </nav-bread>
-    
+
     <div class="accessory-result-page accessory-page">
       <div class="container">
         <div class="filter-nav">
@@ -35,7 +35,7 @@
                 <li v-for="item in goodsList">
                   <div class="pic">
                     <!-- 图片懒加载 -->
-                    <a href="#"><img v-lazy="'static/'+item.productImg" alt=""></a>
+                    <a href="#"><img v-lazy="'static/'+item.productImage" alt=""></a>
                   </div>
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
@@ -47,7 +47,7 @@
                 </li>
               </ul>
             </div>
-          </div> 
+          </div>
         </div>
       </div>
     </div>
@@ -55,8 +55,8 @@
     <!-- 遮罩 -->
     <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
 
-    <nav-footer></nav-footer> 
-    
+    <nav-footer></nav-footer>
+
   </div>
 </template>
 
@@ -111,9 +111,14 @@ export default{
   },
   methods:{
     getGoodsList () {
-      axios.get("/goods").then((result)=>{
-        var res = result.data;
-        this.goodsList = res.result
+      //要设置代理，实际访问localhost:8090下的/goods,因此要转发的localhost:3000下的/goods
+      axios.get("/goods").then((response)=>{
+        let res = response.data;
+        if(res.status == '0'){
+          this.goodsList = res.result.list;
+        }else{
+            this.goodsList = [];
+        }
       })
     },
     setPriceFilter (index) {

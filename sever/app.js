@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');//对返回值进行转换
 
 var index = require('./routes/index');//路由，每个路由相当于一个controller
 var users = require('./routes/users');//路由分模块
+var goods = require('./routes/goods');//商品路由
 
 var app = express();//相当于启一个服务
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));//设置静态目录，d
 
 app.use('/', index);//'/'加载 index 路由模块，以下同理
 app.use('/users', users);
+app.use('/goods',goods);
 
 // catch 404 and forward to error handler
 //对404的拦截

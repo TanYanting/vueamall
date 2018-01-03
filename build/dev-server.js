@@ -26,11 +26,11 @@ const compiler = webpack(webpackConfig)
 
 //路由-模拟数据
 var router = express.Router()
-var goodsDate = require("./../mock/goods.json")
+/*var goodsDate = require("./../mock/goods.json")
 router.get("/goods",function(req,res,next){
   res.json(goodsDate)
 })
-app.use(router)
+app.use(router)*/
 //end
 
 const devMiddleware = require('webpack-dev-middleware')(compiler, {

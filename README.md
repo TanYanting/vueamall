@@ -85,8 +85,23 @@ db.collectionName.find({key:{$gt/$lt/$eq/$gte/$lte:value}})
 ```
 mongoimport -d mock -c goods --file C:\Users\Ablio\Downloads\project\s1n2ub\resource\dumall-goods
 ```
--d:数据库名称
+**-d**:数据库名称
 
--c:集合名称
+**-c**:集合名称
 
---file:要导入的文件的位置
+**--file**:要导入的文件的位置``
+
+## 2018-01-03 笔记
+这个项目的后台服务是`127.0.0.1:3000`,前端自己也有服务器（vue官方脚手架提供的完整服务`127.0.0.1:8090`）
+当前端调`'/goods'`,实际是访问**`localhost:8090`**端口，**`axios`**不支持跨域，因此需要转发请求
+因此，前端调接口需要转发。转发的组建在*`config/index.js:34`*,**`proxyTable`**插件。
+```javascript
+proxyTable: {
+  '/goods':{
+    target:'http://localhost:3000'
+  }
+}
+```
+当调`localhost:8090/goods`时会转发给`localhost:3000/goods`
+在上线项目中，这个步骤应该是不需要的，不需要跨域访问，只是在开发时需要
+>注意：因为是前后端分了两个服务器，务必要保证两个服务都正常运行，才能成功访问。

@@ -31,7 +31,11 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {//设置代理，转发，3000端口（express服务器端口）和8090端口（vue脚手架中自己的dev服务器）跨域需要转发,axios需要，vue-router不需要
+      '/goods':{
+        target:'http://localhost:3000'
+      }
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
