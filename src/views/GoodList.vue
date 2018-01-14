@@ -36,7 +36,7 @@
           <!-- search result accessories list -->
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
-              <ul>
+              <ul >
                 <li v-for="item in goodsList">
                   <div class="pic">
                     <!-- 图片懒加载 -->
@@ -51,6 +51,9 @@
                   </div>
                 </li>
               </ul>
+              <div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+                <img src="./../assets/loading-bubbles.svg" v-show="loading">
+              </div>
             </div>
           </div>
         </div>
@@ -89,9 +92,14 @@ export default{
       sortFlag: true,//排序 1true升序-1false降序
       page: 1,//当前页
       pageSize: 8,//页面容量
+      busy:true,//插件vue-infinie-scroll,是否可以使用（发起请求,false:不禁用true禁用
       priceFilter:[
         {
           startPrice:"0.00",
+          endPrice:"100.00"
+        },
+        {
+          startPrice:"100.00",
           endPrice:"500.00"
         },
         {
@@ -100,7 +108,7 @@ export default{
         },
         {
           startPrice:"1000.00",
-          endPrice:"2000.00"
+          endPrice:"5000.00"
         }
       ],
       priceChecked:"all",
@@ -117,20 +125,34 @@ export default{
     this.getGoodsList(); //获取商品列表
   },
   methods:{
-    getGoodsList () { //获取商品列表
+    getGoodsList (flag) { //获取商品列表,flag区分第一次和第二页及以上需要累加的数据
       let param ={ //参数 传递给后台
         "page": this.page,
         "pageSize": this.pageSize,
-        "sort": this.sortFlag?1:-1
+        "sort": this.sortFlag?1:-1,
+        "priceLevel":this.priceChecked
       };
+      this.loading = true;//显示加载中vue-infinite-scroll
       //要设置代理，实际访问localhost:8090下的/goods,因此要转发的localhost:3000下的/goods
       axios.get("/goods",{params:param}).then((response)=>{
         let res = response.data;
         if(res.status == '0'){
-          this.goodsList = res.result.list;
+          if(flag){
+            this.goodsList = this.goodsList.concat(res.result.list);
+            if(res.result.count == 0){//滚动加载的开关
+              this.busy = true;
+            }else{
+              this.busy = false;
+            }
+          }else{
+            this.goodsList = res.result.list;
+            this.busy = false;
+          }
+          // this.goodsList = this.goodsList.concat(res.result.list);
         }else{
             this.goodsList = [];
         }
+        this.loading = false;//隐藏加载中vue-infinite-scroll
       })
     },
     sortGoods () { //排序
@@ -142,6 +164,8 @@ export default{
       this.priceChecked = index;
       this.filterby = false;
       this.overLayFlag = false;
+      this.page = 1;
+      this.getGoodsList();
     },
     showFilterPop () {
       this.filterby = true;
@@ -150,6 +174,13 @@ export default{
     closePop () {
       this.filterby = false;
       this.overLayFlag = false;
+    },
+    loadMore () { //配合插件 vue-infinite-scroll，应该是根据鼠标滚动的时候发请求，但是鼠标滚动太快，会发起很多次请求，因此设置setTimeout，当一次请求接受才可以发起下一次请求
+      this.busy = true;
+      setTimeout( () => {
+        this.page++;//页码++
+        this.getGoodsList(true);
+      },500);
     }
   }
 }
@@ -158,4 +189,9 @@ export default{
 
 <!-- ----css------ -->
 <style>
+  .load-more{
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
 </style>

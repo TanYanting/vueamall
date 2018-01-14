@@ -139,3 +139,19 @@ goodsModel.exec(function(err,doc){//执行操作,不需要条件了，直接执�
 });
 ```
 
+## 2018-01-1 更新日志(笔记、知识点)
+1. 加了一个插件vue-infinite-scroll,滚动自动加载。
+要注意的是滚动很快，不能发起那么多次请求，因此调用请求要注意开关busy
+具体见：https://www.npmjs.com/package/vue-infinite-scroll
+2. 增加价格过滤筛选条件，接口修改（sever\router\goods.js)
+设置价格范围查询条件
+```ecmascript 6
+ params = {//条件查询设置价格区间
+      salePrice:{
+        $gt:priceGt,
+        $lte:priceLte
+      }
+    }
+```
+
+
