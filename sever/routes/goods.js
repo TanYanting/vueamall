@@ -3,7 +3,6 @@ var router = express.Router();
 var mongoose =require('mongoose');
 var Goods = require("../models/goods");
 
-
 mongoose.connect('mongodb://127.0.0.1:27017/mock');
 
 //链接成功
@@ -68,7 +67,79 @@ router.get("/",function (req,res,next) {
       });
     }
   })
-});
+});//查询商品列表
+
+router.post("/addCart",function (req,res,next) {
+  let userId = "100000077",productId = req.body.productId;
+  var User = require('../models/users');
+
+  User.findOne({userId,userId},function (err,userDoc) {
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      });
+    }else{
+      if(userDoc){
+        let goodItem = "";
+        userDoc.cartList.forEach(function (item) {
+          if(item.productId == productId){
+            goodItem = item;
+            item.productNum ++;
+          }
+        });
+        if(goodItem){//现有数据（购物车现有商品数量++，直接save
+          userDoc.save(function (err2,doc2) {
+            if(err2){
+              res.json({
+                status:'1',
+                msg:err2.message
+              });
+            }else{
+              res.json({
+                status:"0",
+                msg:"",
+                result:"suc"
+              });
+            }
+          });//保存到购物车中，更新该用户购物车中数据
+        }else{//插入一条数据（购物车新增商品
+          Goods.findOne({productId:productId},function (err1,doc) {//去购物车查找这件商品
+            if(err1){
+              res.json({
+                status:'1',
+                msg:err.message
+              });
+            }else{
+              if(doc){
+                doc.productNum = 1;
+                doc.checked = 1;
+                console.log(doc);
+                userDoc.cartList.push(doc);//将找到的商品加入到购物车中
+                userDoc.save(function (err2,doc2) {
+                  if(err2){
+                    res.json({
+                      status:'1',
+                      msg:err2.message
+                    });
+                  }else{
+                    res.json({
+                      status:"0",
+                      msg:"",
+                      result:"suc"
+                    });
+                  }
+                });//保存到购物车中，更新该用户购物车中数据
+              }
+            }
+          });
+        }
+
+      }
+    }
+  });
+
+});//加入购物车功能
 
 module.exports = router;
 
