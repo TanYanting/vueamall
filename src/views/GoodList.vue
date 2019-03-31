@@ -134,7 +134,7 @@ export default{
       };
       this.loading = true;//显示加载中vue-infinite-scroll
       //要设置代理，实际访问localhost:8090下的/goods,因此要转发的localhost:3000下的/goods
-      axios.get("/goods",{params:param}).then((response)=>{
+      axios.get("/goods/list",{params:param}).then((response)=>{
         let res = response.data;
         if(res.status == '0'){
           if(flag){

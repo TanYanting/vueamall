@@ -21,7 +21,7 @@ mongoose.connection.on("disconnected",function () {
 });
 
 //路由
-router.get("/",function (req,res,next) {
+router.get("/list",function (req,res,next) {
   /*业务代码*/
   /* Obj.find(arguments[0],查询条件
   *arguments[1],callback,回调函数)*/

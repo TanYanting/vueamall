@@ -30,6 +30,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());//使用这个插件
 app.use(express.static(path.join(__dirname, 'public')));//设置静态目录，drirname(当前目录/sever
 
+app.use(function (req,res,next) {
+  if (req.cookies.userId) {
+    next();
+  } else if (req.originalUrl === '/users/login' || req.originalUrl === '/users/logout' || req.path ==='/goods/list') {
+    next();
+  } else {
+    res.json({
+      status: '10001',
+      msg: '当前未登录',
+      result: ''
+    })
+  }
+});
+
 app.use('/', index);//'/'加载 index 路由模块，以下同理
 app.use('/users', users);
 app.use('/goods',goods);
@@ -51,6 +65,6 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
+ });
 
 module.exports = app;
